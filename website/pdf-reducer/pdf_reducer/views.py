@@ -14,10 +14,12 @@ from django.views.decorators.http import require_GET, require_POST
 
 JOBS = threading.BoundedSemaphore(2)
 ASSETS = {
-    "assets/css/design.css", "assets/js/pdf-reducer.js", "assets/js/photo-reducer.js",
+    "assets/css/design.css", "assets/js/pdf-reducer.js", "assets/js/photo-reducer.js", "assets/js/seo.js",
     "assets/images/favicon.svg", "assets/images/favicon.png", "assets/images/logo.png",
     "robots.txt", "sitemap.xml", "site.webmanifest",
 }
+TOOL_PATHS = {"pdf-editor/", "compress-pdf/", "compress-photo/", "pdf-converter/",
+              "jpg-to-pdf/", "pdf-to-png/", "merge-pdf/", "extract-pdf-pages/", "remove-background/"}
 
 
 def no_store(response):
@@ -44,6 +46,8 @@ def standalone(request):
 
 @require_GET
 def asset(request, name):
+    if name in TOOL_PATHS:
+        return home(request)
     if name not in ASSETS:
         raise Http404
     path = settings.TOOLBOX_DIR / name

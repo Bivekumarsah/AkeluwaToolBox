@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://localhost:8096/sitemap.xml
+Sitemap: https://akeluwatoolbox-website.vercel.app/sitemap.xml

@@ -2,10 +2,67 @@
   "framework": null,
   "buildCommand": "node scripts/build-static.mjs",
   "outputDirectory": "dist",
-  "rewrites": [
+  "trailingSlash": true,
+  "redirects": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "tool",
+          "value": "pdf"
+        }
+      ],
+      "destination": "/pdf-editor/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "tool",
+          "value": "reducer"
+        }
+      ],
+      "destination": "/compress-pdf/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "tool",
+          "value": "photo"
+        }
+      ],
+      "destination": "/compress-photo/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "tool",
+          "value": "converter"
+        }
+      ],
+      "destination": "/pdf-converter/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "query",
+          "key": "tool",
+          "value": "background"
+        }
+      ],
+      "destination": "/remove-background/",
+      "permanent": true
     }
   ]
 }

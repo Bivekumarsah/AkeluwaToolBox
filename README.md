@@ -101,6 +101,12 @@ The local Django launcher is for personal use on this computer. It is not config
 - Converter: PDF to PNG, images to PDF, image conversion/resizing, PDF merging, and selected-page extraction.
 - AI background remover: transparent PNG output from PNG/JPG/WebP images.
 
+## SEO and custom domains
+
+The current primary URL is `https://akeluwatoolbox-website.vercel.app/`. Builds create individual HTML pages for the core tools, including `/compress-pdf/` and `/compress-photo/`, with descriptive metadata, guides, shared branding, and a generated sitemap. Tool navigation uses crawlable links and supports browser Back and reload.
+
+Page definitions are in `website/assets/js/seo.js`. Later, set the Vercel Production environment variable `SITE_URL` to your new HTTPS domain and redeploy to update all generated SEO URLs. Configure matching permanent redirects and update Search Console when moving domains. Setup and migration steps are in [docs/seo.md](docs/seo.md).
+
 ## Validation
 
 From `website/pdf-reducer`:
@@ -125,3 +131,11 @@ website\pdf-reducer\.venv\Scripts\python.exe tests\photo_smoke.py
 ```
 
 These checks cover local/static hosting, target sizes, valid downloads, transparency, phone-photo orientation, invalid inputs, cancellation, and responsive layouts. Artifacts are saved under `.preview/photo/`.
+
+SEO, page navigation, and custom-domain checks:
+
+```powershell
+website\pdf-reducer\.venv\Scripts\python.exe tests\seo_smoke.py
+```
+
+These checks inspect all generated pages, sitemap entries, static content without JavaScript, mobile layouts, Back/reload behavior, domain overrides, preview indexing rules, and invalid domain configuration. Artifacts are saved under `.preview/seo/`.

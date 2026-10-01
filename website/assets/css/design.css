@@ -247,3 +247,16 @@ aside,.bg-side { background:var(--panel2); }
 .photo-preview-meta { color:var(--muted); font-size:10px; line-height:1.6; margin-top:12px; text-align:center; overflow-wrap:anywhere; }
 #photoSaved { font-size:15px; }
 @media(max-width:380px) { .photo-comparison { grid-template-columns:1fr; } .photo-preview { min-height:220px; } }
+
+/* Useful instructions and links share the toolbox's quiet visual style. */
+.tool-tab { text-decoration:none; }
+.seo-guide { width:min(100%,1080px); margin:0 auto; padding:36px 24px 48px; color:var(--ink); }
+.seo-guide h2 { font:28px/1.25 Georgia,serif; text-transform:none; letter-spacing:-.02em; color:var(--ink); }
+.seo-guide h3 { margin-top:24px; font-size:16px; }
+.seo-guide p,.seo-guide li { font-size:14px; line-height:1.75; color:var(--muted); }
+.seo-guide li { margin-bottom:8px; }
+.seo-guide details { padding:12px 0; border-bottom:1px solid var(--line); }
+.seo-guide summary { cursor:pointer; font-size:14px; font-weight:600; }
+.related-tools { display:flex; flex-wrap:wrap; gap:10px 20px; margin-top:28px; }
+.related-tools a { color:var(--green); font-size:13px; text-underline-offset:3px; }
+.related-tools a:focus-visible,.tool-tab:focus-visible { outline:3px solid var(--blue); outline-offset:4px; }

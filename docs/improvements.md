@@ -63,3 +63,11 @@ Validation after cleanup: all 16 backend tests, 10 PDF browser check groups, and
 ## Vercel build directory compatibility
 
 Reproduced the missing build script error when the build command runs with `website/` as its working directory. Added a website-local build entry point and Vercel configuration while retaining the repository-root command. Both configurations publish only browser files to their own `dist/` directory. The shared build implementation lives inside `website/`, so website-root deployments do not need files from outside their selected root.
+
+## SEO for the Vercel domain
+
+The public site was confirmed to serve localhost canonicals and a localhost sitemap. Updated the primary address to `https://akeluwatoolbox-website.vercel.app/`, with build-time `SITE_URL` override for a future custom domain. The homepage and nine tool pages now have individual static HTML, titles, descriptions, canonicals, social sharing metadata, structured data, instructions, questions, and related links.
+
+Tool links use real URLs; navigation updates metadata and supports Back/reload. The static build generates sitemap/robots files, and Vercel redirects legacy query links to the corresponding tool pages. Removed the blanket homepage rewrite so missing URLs can return 404. Preview builds discourage indexing. Added Search Console and domain migration instructions under `docs/seo.md`.
+
+Validation: all 16 backend tests, 10 PDF browser check groups, and 12 photo check groups passed. The SEO checks cover static metadata/content, disabled JavaScript, ten local/static routes, converter panels, mobile layouts, navigation, custom-domain overrides, preview indexing rules, and invalid domain settings. No JavaScript errors were reported. Search Console verification/submission and search rankings are not completed by these checks.
