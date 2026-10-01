@@ -59,3 +59,7 @@ Moved the local PDF engine from `pdf-size-reducer-ready/pdf-size-reducer/` into 
 Removed the unused legacy `compressor` module and duplicated branding. Its API remains supported and its three checks were moved into the active test suite. Updated launchers, asset routes, smoke checks, and documentation. Static builds publish only public website files to `dist/`, keeping the local Python service out of hosted output.
 
 Validation after cleanup: all 16 backend tests, 10 PDF browser check groups, and 12 photo browser check groups passed. Local and static hosting produced valid downloads with no browser JavaScript errors. Static asset links, manifest icons, shared branding, and the deployment file whitelist were checked. Generated test artifacts and build output were removed after verification.
+
+## Vercel build directory compatibility
+
+Reproduced the missing build script error when the build command runs with `website/` as its working directory. Added a website-local build entry point and Vercel configuration while retaining the repository-root command. Both configurations publish only browser files to their own `dist/` directory. The shared build implementation lives inside `website/`, so website-root deployments do not need files from outside their selected root.

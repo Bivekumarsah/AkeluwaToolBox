@@ -20,6 +20,8 @@ AkeluwaToolBox/
 |   |   |-- pdf_reducer/           # Compression engine, API, and tests
 |   |   |-- templates/             # Standalone PDF page
 |   |   `-- run_windows.bat        # Standalone launcher
+|   |-- scripts/build-static.mjs   # Shared build and website-root entry point
+|   |-- vercel.json                # Website-root deployment configuration
 |   `-- site.webmanifest, robots.txt, sitemap.xml
 |-- scripts/build-static.mjs       # Creates the public dist/ website
 |-- tests/                         # Browser checks
@@ -74,7 +76,11 @@ On the hosted/static site, files are processed in the user's browser. The PDF re
 
 The PDF libraries and AI background-removal model load from CDNs, so initial use needs internet access. Other toolbox tools continue to run in the browser with either hosting mode.
 
-For Vercel, select the **repository root** as the project root. `vercel.json` runs `node scripts/build-static.mjs` and publishes `dist/`. The build copies only the browser website and assets, excluding the Python service, environments, documentation, and tests. The hosted site uses browser compression; Vercel does not run Django.
+For Vercel, use either the **repository root** (blank Root Directory) or **`website`** as the Root Directory. Both contain a `vercel.json` and a `scripts/build-static.mjs` entry point. Select **Other** for the framework preset, use **`node scripts/build-static.mjs`** for the build command, and **`dist`** for the output directory. Each build creates `dist/` inside its selected root; there is no dependency installation step.
+
+The build copies only the browser website and assets, excluding the Python service, environments, build scripts, documentation, and tests. The hosted site uses browser compression; Vercel does not run Django. Redeploy the latest `main` commit after updating these settings.
+
+If Node reports `MODULE_NOT_FOUND` with an empty `requireStack`, check the missing file path near the top of the deployment log and the deployed commit. The build command is resolved from the selected Root Directory. Both supported roots now include the script, so a deployment of an older commit can still report the old missing-path error.
 
 For a static preview, install Node.js and run these commands from the project root:
 
