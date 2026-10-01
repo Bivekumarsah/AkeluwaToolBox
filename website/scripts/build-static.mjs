@@ -25,6 +25,8 @@ export async function buildStatic(outputUrl = new URL('../dist/', import.meta.ur
     await writeFile(join(directory, 'index.html'), renderPage(template, page, origin, noindex));
   }
   await cp(join(source, 'site.webmanifest'), join(output, 'site.webmanifest'));
+  // Keep Google's ownership file available at its exact URL in every build.
+  await cp(join(source, 'googlefb3975d72926d897.html'), join(output, 'googlefb3975d72926d897.html'));
   await cp(join(source, 'assets'), join(output, 'assets'), { recursive: true });
   await writeFile(join(output, 'robots.txt'), `User-agent: *\n${noindex ? 'Disallow: /' : 'Allow: /'}\n\nSitemap: ${origin}/sitemap.xml\n`);
   await writeFile(join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(page => `  <url><loc>${escapeHtml(origin + page.path)}</loc></url>`).join('\n')}\n</urlset>\n`);

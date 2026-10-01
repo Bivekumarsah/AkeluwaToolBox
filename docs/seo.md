@@ -18,6 +18,8 @@ Page definitions and copy live in `website/assets/js/seo.js`. The build uses thi
 
 Search Console ownership and submissions are actions in the owner's Google account. They are not completed automatically by a website build. No analytics or tracking script has been added.
 
+The supplied Google HTML-file verification document is preserved unchanged as `website/googlefb3975d72926d897.html`. Both build entry points publish it at `/googlefb3975d72926d897.html`, and the local server serves that same file. Leave it in the project after verification because Google can recheck ownership. The site owner must still click **Verify** in the URL-prefix property's HTML-file verification panel.
+
 ## Later: use a custom domain
 
 1. Add the domain to the same Vercel project and configure its DNS. Confirm HTTPS and the existing tool paths work on that domain.

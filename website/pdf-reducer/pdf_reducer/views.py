@@ -17,6 +17,7 @@ ASSETS = {
     "assets/css/design.css", "assets/js/pdf-reducer.js", "assets/js/photo-reducer.js", "assets/js/seo.js",
     "assets/images/favicon.svg", "assets/images/favicon.png", "assets/images/logo.png",
     "robots.txt", "sitemap.xml", "site.webmanifest",
+    "googlefb3975d72926d897.html",
 }
 TOOL_PATHS = {"pdf-editor/", "compress-pdf/", "compress-photo/", "pdf-converter/",
               "jpg-to-pdf/", "pdf-to-png/", "merge-pdf/", "extract-pdf-pages/", "remove-background/"}
