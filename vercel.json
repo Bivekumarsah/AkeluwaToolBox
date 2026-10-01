@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/photo-reducer.js", "destination": "/website/photo-reducer.js" },
+    { "source": "/logo.png", "destination": "/website/logo.png" },
+    { "source": "/favicon.png", "destination": "/website/favicon.png" },
+    { "source": "/pdf-reducer.js", "destination": "/website/pdf-reducer.js" },
+    { "source": "/design.css", "destination": "/website/design.css" },
+    { "source": "/favicon.svg", "destination": "/website/favicon.svg" },
+    { "source": "/", "destination": "/website/index.html" },
+    { "source": "/robots.txt", "destination": "/website/robots.txt" },
+    { "source": "/sitemap.xml", "destination": "/website/sitemap.xml" },
+    { "source": "/site.webmanifest", "destination": "/website/site.webmanifest" },
+    { "source": "/(.*)", "destination": "/website/index.html" }
+  ]
+}

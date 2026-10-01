@@ -1,0 +1,22 @@
+# Local development environments and dependency caches.
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Generated screenshots, fixtures, downloads, and test-server logs.
+.preview/
+*.log
+
+# Local secrets and machine-specific files.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+.vercel/
