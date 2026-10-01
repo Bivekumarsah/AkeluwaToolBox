@@ -12,7 +12,7 @@ export const pages = [
     description: site.description, heading: 'Free online PDF and photo tools',
     intro: 'AkeluwaToolBox helps you prepare files for application forms, email, printing, and sharing. Compress a PDF, reduce a photo to a size in KB, add text to a document, convert images, or organize PDF pages. Choose the tool below and download the result without creating an account.',
     steps: [], notes: ['The hosted tools process files in your browser. The PDF libraries are served by this website; background removal needs an internet connection to load its library and AI model. You do not need to upload your documents to a cloud compression service.'],
-    faq: [['Which tool should I choose?', 'Use the PDF reducer for document size, the photo reducer for a target size in KB, and the converters to change file formats. Keep your originals so you can compare the downloaded result.'], ['Do I need an account or subscription?', 'The current AkeluwaToolBox tools are free to use without registration or a subscription.'], ['Where are my files processed?', 'On this hosted website, the tools process PDFs and photos in your browser. If you run the optional local PDF service, it processes PDFs on your own computer and deletes temporary files after each request.']],
+    faq: [['What is Akeluwa ToolBox?', 'Akeluwa ToolBox, also written AkeluwaToolBox, is this collection of free browser-based PDF and photo tools. You can edit and compress PDFs, resize photos, convert files, organize PDF pages, and remove image backgrounds without an account.'], ['Which tool should I choose?', 'Use the PDF reducer for document size, the photo reducer for a target size in KB, and the converters to change file formats. Keep your originals so you can compare the downloaded result.'], ['Do I need an account or subscription?', 'The current AkeluwaToolBox tools are free to use without registration or a subscription.'], ['Where are my files processed?', 'On this hosted website, the tools process PDFs and photos in your browser. If you run the optional local PDF service, it processes PDFs on your own computer and deletes temporary files after each request.']],
   },
   {
     path: '/pdf-editor/', tool: 'pdf', label: 'PDF editor',
@@ -138,7 +138,7 @@ export function structuredData(page, origin = site.origin) {
   const graph = [application];
   if (page.tool === 'home') graph.push({
     '@type': 'WebSite', '@id': origin + '/#website', name: site.name,
-    alternateName: ['AkeluwaToolBox', 'Akeluwa Toolbox'], url: origin + '/', description: site.description,
+    alternateName: ['AkeluwaToolBox', 'Akeluwa Toolbox', new URL(origin).hostname], url: origin + '/', description: site.description,
   });
   else graph.push({'@type': 'BreadcrumbList', itemListElement: [
     {'@type': 'ListItem', position: 1, name: site.name, item: origin + '/'},
@@ -153,6 +153,7 @@ export function structuredData(page, origin = site.origin) {
 }
 
 const metaValues = (page, origin, noindex = false) => [
+  ['name', 'application-name', site.name],
   ['name', 'description', page.description], ['name', 'robots', noindex ? 'noindex, follow' : 'index, follow'],
   ['property', 'og:title', page.title], ['property', 'og:description', page.description], ['property', 'og:type', 'website'],
   ['property', 'og:site_name', site.name], ['property', 'og:url', origin + page.path],

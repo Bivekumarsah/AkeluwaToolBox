@@ -42,6 +42,14 @@ If the live test reports resource errors, check **View tested page** for its HTM
 
 References: [Get your website on Google](https://developers.google.com/search/docs/fundamentals/get-on-google), [Request recrawling](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl), [Site names](https://developers.google.com/search/docs/appearance/site-names).
 
+## Search result branding
+
+The homepage declares `Akeluwa ToolBox` as its preferred site name, with `AkeluwaToolBox`, `Akeluwa Toolbox`, and the current hostname as alternatives. The Open Graph site name, application name, manifest, and visible homepage branding use the same preferred name. The homepage also explains what the brand's PDF and photo tools do. The favicon is a square transparent PNG at `/assets/images/favicon.png`; the supplied original artwork remains in `docs/branding/`.
+
+After changing these signals, request indexing of the production homepage once in Search Console. Google chooses the site name and favicon and needs to recrawl the homepage and icon; changes can take days to weeks and are not guaranteed. Google's AI Overview is generated separately: website metadata cannot directly replace its wording. Use Google's feedback control to report an inaccurate overview.
+
+References: [Site names](https://developers.google.com/search/docs/appearance/site-names), [Favicon requirements](https://developers.google.com/search/docs/appearance/favicon-in-search), [AI Overview feedback](https://support.google.com/websearch/answer/14901683).
+
 ## Later: use a custom domain
 
 1. Add the domain to the same Vercel project and configure its DNS. Confirm HTTPS and the existing tool paths work on that domain.

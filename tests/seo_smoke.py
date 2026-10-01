@@ -1,6 +1,7 @@
 """Check published HTML, domain changes, and tool navigation in installed Chrome."""
 import json
 import os
+import struct
 from pathlib import Path
 import subprocess
 import urllib.error
@@ -27,6 +28,7 @@ class Metadata(HTMLParser):
         self.canonical = None
         self.meta = {}
         self.links = []
+        self.icons = {}
         self.structured = ""
         self.title = ""
         self.capture = None
@@ -37,6 +39,8 @@ class Metadata(HTMLParser):
             self.meta[attrs.get("name") or attrs.get("property")] = attrs.get("content")
         if tag == "link" and attrs.get("rel") == "canonical":
             self.canonical = attrs["href"]
+        if tag == "link" and attrs.get("rel") in {"icon", "apple-touch-icon"}:
+            self.icons[attrs["rel"]] = attrs
         if tag == "a":
             self.links.append(attrs.get("href"))
         if tag == "title":
@@ -81,6 +85,7 @@ def main():
             descriptions.add(metadata.meta["description"])
             assert "index, follow" == metadata.meta["robots"]
             assert metadata.meta["og:image"] == ORIGIN + "/assets/images/logo.png"
+            assert metadata.icons["icon"]["sizes"] == "192x192"
         assert len(titles) == len(ROUTES) and len(descriptions) == len(ROUTES)
         checks.append("Ten published pages have unique titles/descriptions, self-canonicals, guides, and valid structured data")
         sitemap = ET.fromstring(urllib.request.urlopen(static + "/sitemap.xml").read())
@@ -89,6 +94,20 @@ def main():
         robots = urllib.request.urlopen(static + "/robots.txt").read().decode()
         assert "Allow: /" in robots and ORIGIN + "/sitemap.xml" in robots
         for base in (static, local):
+            metadata = inspect(urllib.request.urlopen(base + "/").read().decode("utf-8"), "/")
+            with urllib.request.urlopen(base + metadata.icons["icon"]["href"]) as response:
+                assert response.headers.get_content_type() == "image/png"
+                icon = response.read()
+            assert icon[:8] == b"\x89PNG\r\n\x1a\n"
+            assert struct.unpack(">II", icon[16:24]) == (192, 192)
+            assert icon[25] == 6, "The favicon must retain RGBA transparency"
+            manifest = json.loads(urllib.request.urlopen(base + "/site.webmanifest").read())
+            assert manifest["name"] == manifest["short_name"] == metadata.meta["og:site_name"] == metadata.meta["application-name"]
+            assert manifest["icons"][0]["src"] == metadata.icons["icon"]["href"] == metadata.icons["apple-touch-icon"]["href"]
+            assert manifest["icons"][0]["sizes"] == "192x192"
+            website = next(node for node in json.loads(metadata.structured)["@graph"] if node["@type"] == "WebSite")
+            assert website["name"] == manifest["name"]
+            assert "akeluwatoolbox-website.vercel.app" in website["alternateName"]
             for asset in ("pdf-lib/pdf-lib.min.js", "pdfjs/pdf.min.js", "pdfjs/pdf.worker.min.js"):
                 with urllib.request.urlopen(base + "/assets/vendor/" + asset) as response:
                     assert response.headers.get_content_type() in {"text/javascript", "application/javascript"}, (base, asset, response.headers)
@@ -101,6 +120,7 @@ def main():
             else:
                 raise AssertionError("Unknown paths should return 404")
         checks.append("Sitemap and robots use the production address; ownership verification is accessible; unknown paths return 404")
+        checks.append("Local and static sites serve a square transparent PNG; manifest, icon declarations, and preferred site name agree")
         browser = pw.chromium.launch(channel="chrome", headless=True)
         nojs = browser.new_context(java_script_enabled=False)
         page = nojs.new_page()
