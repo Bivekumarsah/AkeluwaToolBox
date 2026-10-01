@@ -7,5 +7,5 @@ urlpatterns = [
     path("api/pdf-reducer/capabilities/", views.capabilities),
     path("api/pdf-reducer/compress/", views.compress),
     path("api/compress/", views.compress),
-    path("<str:name>", views.asset),
+    path("<path:name>", views.asset),
 ]

@@ -16,7 +16,7 @@ import pymupdf
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = ROOT / "pdf-size-reducer-ready" / "pdf-size-reducer"
+APP = ROOT / "website" / "pdf-reducer"
 ARTIFACTS = ROOT / ".preview" / "reducer"
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
@@ -56,7 +56,9 @@ def server(local):
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         port = sock.getsockname()[1]
-    command = [sys.executable, str(APP / "manage.py"), "runserver", f"127.0.0.1:{port}", "--noreload"] if local else [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1", "--directory", str(ROOT / "website")]
+    if not local:
+        subprocess.run(["node", str(ROOT / "scripts" / "build-static.mjs")], cwd=ROOT, check=True)
+    command = [sys.executable, str(APP / "manage.py"), "runserver", f"127.0.0.1:{port}", "--noreload"] if local else [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1", "--directory", str(ROOT / "dist")]
     with (ARTIFACTS / ("local-server.log" if local else "static-server.log")).open("w") as log:
         process = subprocess.Popen(command, cwd=APP, stdout=log, stderr=log,
                                    creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)

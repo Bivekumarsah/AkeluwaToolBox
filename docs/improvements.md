@@ -34,7 +34,7 @@ Validation: all 16 backend tests passed. Ten Chrome smoke-check groups passed wi
 
 - Added the supplied forest-green wordmark to the header and the supplied circuit icon as the PNG favicon, touch icon, and manifest icon.
 - Balanced the palette around forest-green buttons/headings, small blue navigation/conversion accents, and pale backgrounds. Focus indicators now use the same blue accent.
-- Added the image routes for Vercel and the local service. The standalone PDF reducer uses the same branding with bundled image fallbacks.
+- Added the image routes for Vercel and the local service. The standalone PDF reducer uses the same branding assets as the website.
 
 Verified both static and local asset responses against the original images, all tool navigation, and desktop/tablet/mobile layouts without horizontal overflow or JavaScript errors. Screenshots and the verification report are in `.preview/branding/`.
 
@@ -51,3 +51,11 @@ Added a dedicated **Compress photo** navigation entry and home card. The workspa
 Photo processing stays in the browser for both local and static hosting. Added the JavaScript asset to local and Vercel routes and adjusted navigation wrapping for the extra tool.
 
 Validation: all 12 photo browser check groups passed with no JavaScript errors. A generated 4,696,036-byte test image was reduced to 102,129 bytes (97.8% smaller) at a 100 KB target on both local and static hosting. Checks cover format/download validity, transparency, PNG targets, rotation, invalid inputs/options, clearing stale results, cancellation, tool navigation, and layouts from 320 to 1440 pixels. Reproducible checks are in `tests/photo_smoke.py`; screenshots and results are under `.preview/photo/`.
+
+## Directory cleanup
+
+Moved the local PDF engine from `pdf-size-reducer-ready/pdf-size-reducer/` into `website/pdf-reducer/`. Grouped browser styles, scripts, and display images under `website/assets/`. Original branding and this development history now live under `docs/`.
+
+Removed the unused legacy `compressor` module and duplicated branding. Its API remains supported and its three checks were moved into the active test suite. Updated launchers, asset routes, smoke checks, and documentation. Static builds publish only public website files to `dist/`, keeping the local Python service out of hosted output.
+
+Validation after cleanup: all 16 backend tests, 10 PDF browser check groups, and 12 photo browser check groups passed. Local and static hosting produced valid downloads with no browser JavaScript errors. Static asset links, manifest icons, shared branding, and the deployment file whitelist were checked. Generated test artifacts and build output were removed after verification.

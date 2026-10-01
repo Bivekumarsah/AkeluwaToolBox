@@ -1,6 +1,6 @@
 ﻿# PDF Size Reducer
 
-A complete local Django/PyMuPDF application, also integrated into Akeluwa ToolBox.
+The optional local Django/PyMuPDF engine for Akeluwa ToolBox, located inside `website/pdf-reducer/`. Browser compression lives in `../assets/js/pdf-reducer.js`.
 
 ## Windows
 
@@ -14,7 +14,7 @@ To run the whole Akeluwa ToolBox, use `start-windows.bat` in the toolbox root. I
 sh run_linux_mac.sh
 ```
 
-Use `sh run_linux_mac.sh --toolbox` when this folder is inside the Akeluwa ToolBox project. The standalone folder works independently without the `website/` folder; its root then serves the standalone interface.
+Use `sh run_linux_mac.sh --toolbox` when this folder is inside the Akeluwa ToolBox project. The standalone page uses the shared logo and favicon in `../assets/images/`. Keep this folder inside `website/` so those assets remain available.
 
 ## Compression
 
@@ -30,7 +30,7 @@ The service binds only to localhost and uses CSRF protection. Uploaded files and
 
 `GET /api/pdf-reducer/capabilities/` returns the engine, limits, and a CSRF token, setting its cookie. Send that token in `X-CSRFToken` with a same-origin multipart request to `POST /api/pdf-reducer/compress/` containing `file`, `target`, and `mode` (`preserve` or `visual`). The response is a PDF download with JSON metrics in `X-PDF-Result`.
 
-The older `POST /api/compress/` path with fields `pdf` and `percentage` remains supported. It defaults to preserve-text mode and returns the older size/reduction headers alongside the new metrics. The old `compressor` Python module delegates to the upgraded engine; its original assets are retained for compatibility.
+The older `POST /api/compress/` path with fields `pdf` and `percentage` remains supported. It defaults to preserve-text mode and returns the older size/reduction headers alongside the new metrics. The legacy Python module and duplicate UI/assets have been removed; the compatibility endpoint is handled directly by `pdf_reducer.views`.
 
 ## Tests
 

@@ -13,8 +13,11 @@ from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
 
 JOBS = threading.BoundedSemaphore(2)
-ASSETS = {"design.css", "pdf-reducer.js", "photo-reducer.js", "favicon.svg", "favicon.png", "logo.png", "robots.txt",
-          "sitemap.xml", "site.webmanifest"}
+ASSETS = {
+    "assets/css/design.css", "assets/js/pdf-reducer.js", "assets/js/photo-reducer.js",
+    "assets/images/favicon.svg", "assets/images/favicon.png", "assets/images/logo.png",
+    "robots.txt", "sitemap.xml", "site.webmanifest",
+}
 
 
 def no_store(response):
@@ -44,8 +47,6 @@ def asset(request, name):
     if name not in ASSETS:
         raise Http404
     path = settings.TOOLBOX_DIR / name
-    if not path.is_file() and name in {"logo.png", "favicon.png"}:
-        path = settings.BASE_DIR / "branding" / name
     if not path.is_file():
         raise Http404
     return FileResponse(path.open("rb"))

@@ -17,8 +17,8 @@
   <link rel="canonical" href="http://localhost:8096/" />
   <link rel="manifest" href="/site.webmanifest" />
   <title>Akeluwa ToolBox - PDF Editor, Converter and Image Tools</title>
-  <link rel="icon" type="image/png" sizes="424x367" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="424x367" href="/assets/images/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/images/favicon.png" />
   <style>
     :root { color-scheme: light; --ink:#202c26; --muted:#66716a; --panel:#ffffff; --panel2:#f2f3ee; --line:#dedfd7; --accent:#245b45; --accent2:#347557; --danger:#b84b59; }
     * { box-sizing:border-box; }
@@ -149,7 +149,7 @@
     @media (max-width:980px) { .tool-grid,.home-stats,.info-grid,.feature-list,.quality-grid,.privacy-flow { grid-template-columns:1fr; } .converter-layout { grid-template-columns:1fr; } .workspace { grid-template-columns:230px minmax(320px,1fr); } .right { grid-column:1/-1; border-left:0; border-top:1px solid var(--line); display:grid; grid-template-columns:1fr 1fr; gap:14px; } .bg-layout { grid-template-columns:230px minmax(360px,1fr); } .bg-side:last-child { grid-column:1/-1; border-left:0; border-top:1px solid var(--line); } }
     @media (max-width:700px) { header { padding:9px 14px; flex-wrap:wrap; } .privacy { display:none; } .tool-tabs { order:3; width:100%; } .tool-tab { flex:1; } .home { padding:28px 14px; } .tool-card { min-height:210px; } .converter-layout { padding:18px 12px; } .converter-row { grid-template-columns:1fr; } .workspace { display:block; } aside { border:0 !important; } .left { padding-bottom:12px; } .pages { grid-template-columns:repeat(4,1fr); max-height:100px; } main { min-height:68vh; } .stage-wrap { padding:22px 14px; } .right { display:block; } .toolbar { align-items:flex-start; } .bg-layout { display:block; } .bg-center { padding:18px 12px; } .compare { grid-template-columns:1fr; min-height:380px; } .compare-pane { min-height:310px; } .compare-pane + .compare-pane { border-left:0; border-top:1px solid var(--line); } }
   </style>
-  <link rel="stylesheet" href="/design.css" />
+  <link rel="stylesheet" href="/assets/css/design.css" />
   <meta name="theme-color" content="#195443" />
 </head>
 <body>
@@ -157,7 +157,7 @@
   <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol><symbol id="i-edit" viewBox="0 0 24 24"><path d="M13 4H5v16h14v-8M10 14l1-4 7-7 3 3-7 7-4 1Z"/></symbol><symbol id="i-convert" viewBox="0 0 24 24"><path d="M4 7h15m-4-4 4 4-4 4M20 17H5m4-4-4 4 4 4"/></symbol><symbol id="i-cutout" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" stroke-dasharray="2 3"/><path d="m7 16 4-5 3 3 3-4"/><circle cx="8" cy="8" r="1"/></symbol><symbol id="i-merge" viewBox="0 0 24 24"><path d="M7 3H3v14h10v-4M11 7h10v14H11zM7 3l6 6M9 9h4V5"/></symbol><symbol id="i-pages" viewBox="0 0 24 24"><path d="M9 4h11v16H9zM5 7H3v10h2M12 8h5M12 12h5M12 16h3"/></symbol><symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="2"/><path d="m3 17 5-4 4 3 5-6 4 5"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></symbol></svg>
   <div class="app">
     <header>
-      <button class="brand" data-launch-tool="home" aria-label="Akeluwa ToolBox home"><span class="brand-logo-wrap"><img class="brand-logo" src="/logo.png" alt="Akeluwa ToolBox" width="2172" height="724" fetchpriority="high" /></span><small>Everyday work, made lighter</small></button>
+      <button class="brand" data-launch-tool="home" aria-label="Akeluwa ToolBox home"><span class="brand-logo-wrap"><img class="brand-logo" src="/assets/images/logo.png" alt="Akeluwa ToolBox" width="2172" height="724" fetchpriority="high" /></span><small>Everyday work, made lighter</small></button>
       <nav class="tool-tabs" aria-label="Tool navigation"><button class="tool-tab active" data-tool="home" aria-current="page">All tools</button><button class="tool-tab" data-tool="pdf">PDF editor</button><button class="tool-tab" data-tool="reducer">Compress PDF</button><button class="tool-tab" data-tool="photo">Compress photo</button><button class="tool-tab" data-tool="converter">Convert &amp; organize</button><button class="tool-tab" data-tool="background">Remove background</button></nav>
       <div class="privacy"><svg class="icon " aria-hidden="true"><use href="#i-shield"></use></svg> Files stay on your device</div>
     </header>
@@ -417,8 +417,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script type="module">
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs';
-    import { initPdfReducer } from '/pdf-reducer.js';
-    import { initPhotoReducer } from '/photo-reducer.js';
+    import { initPdfReducer } from '/assets/js/pdf-reducer.js';
+    import { initPhotoReducer } from '/assets/js/photo-reducer.js';
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
 
     const $ = (id) => document.getElementById(id);

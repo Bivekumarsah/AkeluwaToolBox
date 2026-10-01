@@ -2,9 +2,37 @@
 
 A private toolbox for PDF editing, PDF and photo size reduction, conversion, merging, page extraction, image tools, and AI background removal.
 
-The header uses the supplied Forest Green AkeluwaToolBox logo, and the browser icon uses the supplied circuit favicon. Website colors combine forest green, restrained blue accents, and pale neutral backgrounds. Display assets live in `website/logo.png` and `website/favicon.png`; the original images remain in the project root. The standalone reducer includes its own copies under `branding/`.
+The header uses the supplied Forest Green AkeluwaToolBox logo, and the browser icon uses the supplied circuit favicon. Website colors combine forest green, restrained blue accents, and pale neutral backgrounds. Display assets live in `website/assets/images/`; the supplied original images are preserved in `docs/branding/`. Both the toolbox and standalone PDF page use the same display assets.
 
 The homepage hero includes a static preview of the local Akeluwa Software Hub website, recreated from the supplied screenshot with its dark design, headline, and signal illustration.
+
+## Project folders
+
+```text
+AkeluwaToolBox/
+|-- website/
+|   |-- index.html                 # Main toolbox page and navigation
+|   |-- assets/
+|   |   |-- css/                   # Website styles
+|   |   |-- js/                    # Browser PDF and photo reducers
+|   |   `-- images/                # Display logo and favicon
+|   |-- pdf-reducer/               # Local Python PDF service
+|   |   |-- pdf_reducer/           # Compression engine, API, and tests
+|   |   |-- templates/             # Standalone PDF page
+|   |   `-- run_windows.bat        # Standalone launcher
+|   `-- site.webmanifest, robots.txt, sitemap.xml
+|-- scripts/build-static.mjs       # Creates the public dist/ website
+|-- tests/                         # Browser checks
+|-- docs/                          # Development notes and original branding
+|-- start-windows.bat              # Launch the whole toolbox locally
+|-- start-linux-mac.sh
+|-- vercel.json                    # Static hosting configuration
+`-- README.md
+```
+
+The PDF reducer is part of the website: its browser code is in `website/assets/js/pdf-reducer.js`, and its optional local engine is in `website/pdf-reducer/`. There is no separate `pdf-size-reducer-ready/` folder.
+
+Generated folders (`.preview/`, `dist/`, `.venv/`, and `__pycache__/`) are ignored by Git. You can delete `.preview/` and `dist/`; the checks/build recreate them. Deleting the service's `.venv/` causes dependencies to reinstall on the next launch. Keep `.git/` for version history.
 
 ## Run on Windows
 
@@ -28,7 +56,7 @@ On Linux/macOS, run `sh start-linux-mac.sh` from this folder.
 - Limits: 60 MB, 200 pages. Password-protected PDFs must be unlocked first. Keep originals of signed PDFs because compression can invalidate signatures.
 - Browser compression can be cancelled. Cancelling a local request stops waiting in the browser; its worker can continue until completion or the 120-second timeout, after which its temporary files are removed.
 
-The completed standalone application lives in `pdf-size-reducer-ready/pdf-size-reducer`. Run its `run_windows.bat` to open the standalone interface at `http://127.0.0.1:8000/reducer/`.
+The local PDF service and standalone page live in `website/pdf-reducer`. Run its `run_windows.bat` to open the standalone interface at `http://127.0.0.1:8000/reducer/`.
 
 ## Photo size reducer
 
@@ -46,7 +74,16 @@ On the hosted/static site, files are processed in the user's browser. The PDF re
 
 The PDF libraries and AI background-removal model load from CDNs, so initial use needs internet access. Other toolbox tools continue to run in the browser with either hosting mode.
 
-For Vercel, deploy this whole folder with `vercel.json`, or use `website/` as the project root. The hosted site uses the browser compression engine; Vercel does not run the local Django service. For simple static development, serve `website/` with `py -m http.server 8096 --bind 127.0.0.1 --directory website`.
+For Vercel, select the **repository root** as the project root. `vercel.json` runs `node scripts/build-static.mjs` and publishes `dist/`. The build copies only the browser website and assets, excluding the Python service, environments, documentation, and tests. The hosted site uses browser compression; Vercel does not run Django.
+
+For a static preview, install Node.js and run these commands from the project root:
+
+```powershell
+node scripts/build-static.mjs
+py -m http.server 8096 --bind 127.0.0.1 --directory dist
+```
+
+Open `http://127.0.0.1:8096`. Rebuild after changing website files. `dist/` is generated and excluded from Git.
 
 The local Django launcher is for personal use on this computer. It is not configured as a public upload service.
 
@@ -60,17 +97,17 @@ The local Django launcher is for personal use on this computer. It is not config
 
 ## Validation
 
-From `pdf-size-reducer-ready/pdf-size-reducer`:
+From `website/pdf-reducer`:
 
 ```powershell
 .venv\Scripts\python.exe manage.py test
 ```
 
-For browser smoke checks, install the optional development requirements and run from the toolbox root. The check uses an existing Chrome installation and starts/stops its own test servers:
+For browser smoke checks, install the optional development requirements and run from the toolbox root. The checks require Node.js and an existing Chrome installation. They build the static site and start/stop their own test servers:
 
 ```powershell
-pdf-size-reducer-ready\pdf-size-reducer\.venv\Scripts\python.exe -m pip install -r pdf-size-reducer-ready\pdf-size-reducer\requirements-dev.txt
-pdf-size-reducer-ready\pdf-size-reducer\.venv\Scripts\python.exe tests\browser_smoke.py
+website\pdf-reducer\.venv\Scripts\python.exe -m pip install -r website\pdf-reducer\requirements-dev.txt
+website\pdf-reducer\.venv\Scripts\python.exe tests\browser_smoke.py
 ```
 
 Generated test fixtures, results, screenshots, and the browser report are saved under `.preview/reducer/`.
@@ -78,7 +115,7 @@ Generated test fixtures, results, screenshots, and the browser report are saved 
 Photo reducer checks run with the same environment:
 
 ```powershell
-pdf-size-reducer-ready\pdf-size-reducer\.venv\Scripts\python.exe tests\photo_smoke.py
+website\pdf-reducer\.venv\Scripts\python.exe tests\photo_smoke.py
 ```
 
 These checks cover local/static hosting, target sizes, valid downloads, transparency, phone-photo orientation, invalid inputs, cancellation, and responsive layouts. Artifacts are saved under `.preview/photo/`.
