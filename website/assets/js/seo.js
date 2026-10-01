@@ -2,17 +2,17 @@
 export const site = {
   name: 'Akeluwa ToolBox',
   origin: 'https://akeluwatoolbox-website.vercel.app',
-  description: 'Free PDF and photo tools: compress files, edit PDFs, convert images, merge pages, and remove backgrounds without an account.',
+  description: 'AkeluwaToolBox offers free online PDF and photo tools. Compress, edit, convert and merge files or remove image backgrounds in your browser. No sign-up.',
 };
 
 export const pages = [
   {
     path: '/', tool: 'home', label: 'All tools',
-    title: 'Free PDF & Photo Tools Online | Akeluwa ToolBox',
+    title: 'Akeluwa ToolBox | Free PDF & Photo Tools Online',
     description: site.description, heading: 'Free online PDF and photo tools',
-    intro: 'Choose a tool for the file you want to change. Akeluwa ToolBox helps you reduce file sizes, prepare documents, convert photos, and create transparent images in your browser. No account is required.',
-    steps: [], notes: ['The hosted tools process files in your browser. Libraries and the background removal model need an internet connection to load; they do not require uploading your documents to a cloud compression service.'],
-    faq: [['Which tool should I choose?', 'Use the PDF reducer for document size, the photo reducer for a target size in KB, and the converters to change file formats. Keep your originals so you can compare the downloaded result.']],
+    intro: 'AkeluwaToolBox helps you prepare files for application forms, email, printing, and sharing. Compress a PDF, reduce a photo to a size in KB, add text to a document, convert images, or organize PDF pages. Choose the tool below and download the result without creating an account.',
+    steps: [], notes: ['The hosted tools process files in your browser. The PDF libraries are served by this website; background removal needs an internet connection to load its library and AI model. You do not need to upload your documents to a cloud compression service.'],
+    faq: [['Which tool should I choose?', 'Use the PDF reducer for document size, the photo reducer for a target size in KB, and the converters to change file formats. Keep your originals so you can compare the downloaded result.'], ['Do I need an account or subscription?', 'The current AkeluwaToolBox tools are free to use without registration or a subscription.'], ['Where are my files processed?', 'On this hosted website, the tools process PDFs and photos in your browser. If you run the optional local PDF service, it processes PDFs on your own computer and deletes temporary files after each request.']],
   },
   {
     path: '/pdf-editor/', tool: 'pdf', label: 'PDF editor',
@@ -31,6 +31,7 @@ export const pages = [
     heading: 'How to reduce PDF file size',
     intro: 'A smaller PDF is easier to send by email or upload to a form. Choose a reduction target and compare the actual savings before using the result.',
     steps: ['Choose a PDF up to 60 MB and 200 pages.', 'Select a 5–90% reduction target and preserve-text or visual compression.', 'Review the original size, result size, and target status, then download.'],
+    example: 'For a 4 MB PDF, a 50% reduction target means aiming for 2 MB. If the smallest result is 2.8 MB, the actual saving is 30% and the target was not reached. Compare readability before using visual compression for a scanned document.',
     notes: ['Preserve-text mode keeps selectable text, links, and forms. Browser optimization can provide little reduction for scans. Visual compression turns pages into images and removes text selection, links, forms, and accessibility tags. Keep your original.'],
     faq: [['Will my PDF reach the requested reduction?', 'The target is not guaranteed. Results depend on the document. The reducer keeps the smallest candidate and returns the original if compression would make it larger.'], ['Can I compress an encrypted or signed PDF?', 'Unlock password-protected PDFs first. Compression can invalidate digital signatures, so retain signed originals.']],
   },
@@ -41,6 +42,7 @@ export const pages = [
     heading: 'How to reduce a photo to a target size in KB',
     intro: 'Prepare a photo for an application form, email, or website. Choose a target such as 100 KB or 200 KB and let the reducer adjust encoding quality and dimensions.',
     steps: ['Choose a JPG, PNG, or WebP photo up to 30 MB.', 'Set the target size, maximum width, quality, and output format.', 'Compare the previews and size change, check whether the target was met, and download.'],
+    example: 'If an application form accepts photos up to 200 KB, choose the 200 KB preset and a format the form accepts. Check both the downloaded file size and the minimum dimensions required by the form. A size target can reduce dimensions, so smaller is not always suitable.',
     notes: ['Targets can lower dimensions and are not guaranteed for every image. Smaller photos are not enlarged. PNG and WebP retain transparency; JPG uses a white background for transparent areas. PNG targets use resizing rather than lossy quality adjustments.'],
     faq: [['Can I use 100 KB, 200 KB, or 500 KB?', 'Yes. Choose a preset or enter a target between 10 and 30,000 KB. Leave the target empty to use your selected width and quality directly.'], ['Will compression change the image quality?', 'JPG and WebP compression can discard detail, and resizing changes dimensions. Compare the result with the original, especially when small text must remain readable.']],
   },
@@ -91,6 +93,7 @@ export const pages = [
     heading: 'How to extract selected pages from a PDF',
     intro: 'Share only the pages you need from a larger document. Enter individual page numbers or ranges to create a separate PDF while keeping the original file.',
     steps: ['Choose the PDF containing the pages you need.', 'Enter page numbers or ranges, for example 1, 3-5, 8.', 'Download the extracted PDF and check that it contains the intended pages.'],
+    example: 'Entering 1, 3-5, 8 in a document with at least eight pages creates a five-page PDF containing pages 1, 3, 4, 5, and 8. Repeated page numbers are included once, and output pages follow their order in the original document.',
     notes: ['Page numbers start at 1 and must exist in the selected document. Extraction copies pages into a new file; it does not delete pages from your original. Keep signed originals because changes can invalidate signatures.'],
     faq: [['Can I extract one page?', 'Yes. Enter a single page number, such as 4.'], ['Can I choose a range?', 'Yes. Use a range such as 3-5, or combine ranges with individual pages separated by commas.']],
   },
@@ -120,7 +123,9 @@ export function normalizeOrigin(value = site.origin) {
 export function renderGuide(page) {
   const links = pages.filter(other => other.path !== page.path).map(other => `<a href="${other.path}">${escapeHtml(other.label)}</a>`).join('');
   const steps = page.steps.length ? `<ol>${page.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '';
-  return `<section class="seo-guide" id="toolGuide" aria-labelledby="guideTitle"><h2 id="guideTitle">${escapeHtml(page.heading)}</h2><p>${escapeHtml(page.intro)}</p>${steps}${page.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}<h3>Common questions</h3>${page.faq.map(([question, answer]) => `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`).join('')}<nav class="related-tools" aria-label="Related file tools">${links}</nav></section>`;
+  const breadcrumb = page.tool === 'home' ? '' : `<nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">${escapeHtml(site.name)}</a></li><li aria-current="page">${escapeHtml(page.label)}</li></ol></nav>`;
+  const example = page.example ? `<h3>Practical example</h3><p>${escapeHtml(page.example)}</p>` : '';
+  return `<section class="seo-guide" id="toolGuide" aria-labelledby="guideTitle">${breadcrumb}<h2 id="guideTitle">${escapeHtml(page.heading)}</h2><p>${escapeHtml(page.intro)}</p>${steps}${example}${page.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}<h3>Common questions</h3>${page.faq.map(([question, answer]) => `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`).join('')}<nav class="related-tools" aria-label="Related file tools">${links}</nav></section>`;
 }
 
 export function structuredData(page, origin = site.origin) {
@@ -131,11 +136,19 @@ export function structuredData(page, origin = site.origin) {
     offers: {'@type': 'Offer', price: '0', priceCurrency: 'USD'},
   };
   const graph = [application];
-  if (page.tool === 'home') graph.push({'@type': 'WebSite', '@id': origin + '/#website', name: site.name, alternateName: 'AkeluwaToolBox', url: origin + '/'});
+  if (page.tool === 'home') graph.push({
+    '@type': 'WebSite', '@id': origin + '/#website', name: site.name,
+    alternateName: ['AkeluwaToolBox', 'Akeluwa Toolbox'], url: origin + '/', description: site.description,
+  });
   else graph.push({'@type': 'BreadcrumbList', itemListElement: [
     {'@type': 'ListItem', position: 1, name: site.name, item: origin + '/'},
     {'@type': 'ListItem', position: 2, name: page.label, item: url},
   ]});
+  graph.push({
+    '@type': 'WebPage', '@id': url + '#webpage', url, name: page.title,
+    description: page.description, inLanguage: 'en',
+    isPartOf: {'@id': origin + '/#website'}, mainEntity: {'@id': application['@id']},
+  });
   return {'@context': 'https://schema.org', '@graph': graph};
 }
 
@@ -168,6 +181,9 @@ export function renderPage(template, page, origin = site.origin, noindex = false
     return `<${tag} class="${names.join(' ')}" id="${id}"`;
   });
   html = html.replace(/<section class="converter-panel" id="([^"]+)"/g, (_, id) => `<section class="converter-panel${page.panel && page.panel !== id ? ' hidden' : ''}" id="${id}"`);
+  if (page.tool === 'converter') {
+    html = html.replace(/(<h1 id="converterTitle">)[^<]*(<\/h1>)/, (_, open, close) => open + escapeHtml(page.title.split(' | ')[0]) + close);
+  }
   html = html.replace(/class="tool-tab(?: active)?"([^>]*?)data-tool="([^"]+)"(?: aria-current="page")?/g, (_, middle, tool) => `class="tool-tab${tool === page.tool ? ' active' : ''}"${middle}data-tool="${tool}"${tool === page.tool ? ' aria-current="page"' : ''}`);
   return html;
 }
@@ -184,6 +200,7 @@ export function updateSeo(page, navigate = false) {
   const origin = normalizeOrigin(JSON.parse(document.getElementById('site-origin').textContent));
   const noindex = document.body.dataset.seoNoindex === 'true';
   document.title = page.title;
+  if (page.tool === 'converter') document.getElementById('converterTitle').textContent = page.title.split(' | ')[0];
   for (const [attribute, key, value] of metaValues(page, origin, noindex)) {
     let meta = document.querySelector(`meta[${attribute}="${key}"]`);
     if (!meta) { meta = document.createElement('meta'); meta.setAttribute(attribute, key); document.head.append(meta); }

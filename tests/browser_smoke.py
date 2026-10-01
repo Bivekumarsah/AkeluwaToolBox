@@ -109,6 +109,7 @@ def main():
     with sync_playwright() as pw, server(True) as local, server(False) as static:
         browser = pw.chromium.launch(channel="chrome", headless=True)
         context = browser.new_context(accept_downloads=True, viewport={"width": 1440, "height": 1000})
+        context.route("https://cdnjs.cloudflare.com/**", lambda route: route.abort())
         page = context.new_page()
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
@@ -168,8 +169,8 @@ def main():
         page.locator("#reduceInput").set_input_files(ARTIFACTS / "scan.pdf")
         expect(page.locator("#reduceRun")).to_be_enabled(timeout=20000)
         page.locator("#reduceVisual").check()
-        page.locator("#reduceRun").click()
-        page.locator("#reduceCancel").click()
+        # Cancel immediately; fast jobs can finish while Playwright scrolls to Cancel.
+        page.evaluate("() => { document.getElementById('reduceRun').click(); document.getElementById('reduceCancel').click(); }")
         expect(page.locator("#reduceStatus")).to_contain_text("cancelled", timeout=20000)
         expect(page.locator("#reduceRun")).to_be_enabled()
         page.locator("#reduceClear").click()

@@ -20,6 +20,28 @@ Search Console ownership and submissions are actions in the owner's Google accou
 
 The supplied Google HTML-file verification document is preserved unchanged as `website/googlefb3975d72926d897.html`. Both build entry points publish it at `/googlefb3975d72926d897.html`, and the local server serves that same file. Leave it in the project after verification because Google can recheck ownership. The site owner must still click **Verify** in the URL-prefix property's HTML-file verification panel.
 
+## If the website does not appear when you search
+
+First distinguish whether Google has indexed the URL from whether it ranks for the phrase you searched. Use **URL Inspection** in the property's Search Console to inspect `https://akeluwatoolbox-website.vercel.app/`. A `site:` search is a quick clue, but it does not list every indexed URL and cannot confirm the reason a page is missing.
+
+After deploying the current build to **Production** on Vercel:
+
+1. Open the public homepage, `/compress-pdf/`, `/compress-photo/`, `/robots.txt`, `/sitemap.xml`, and `/googlefb3975d72926d897.html` in a private browser window. They must work without signing into Vercel. The verification document must contain `google-site-verification: googlefb3975d72926d897.html`.
+2. Confirm the production page source has `index, follow`, its canonical points to the same public domain, and `robots.txt` allows crawling. A deployment created as a preview deliberately blocks indexing; publish a production deployment rather than removing preview protection.
+3. Verify the URL-prefix property, submit `sitemap.xml` in **Sitemaps**, and check its processing status. A verification file in the website does not by itself complete verification or submit a sitemap.
+4. Inspect the homepage and the two compressor URLs. Check the indexed result, then use **Test live URL** to check the current deployment. The live test checks accessibility and eligibility; it does not prove that the URL is already indexed. If the live test passes, choose **Request indexing**.
+5. If a URL is excluded, use the reported reason: fix login/server errors, blocking directives, or a canonical pointing elsewhere. For `Discovered - currently not indexed` or `Crawled - currently not indexed`, review the page's useful content and internal links and monitor subsequent crawling. Repeated indexing requests do not speed up crawling.
+
+If the URL is indexed but does not appear for a broad phrase such as "compress PDF", inspect **Performance** for actual impressions, queries, and positions. Clear tool names and helpful instructions can improve relevance, but competitive queries require useful content, a reliable experience, and recognition over time. Google says crawling can take days to weeks, and requesting it does not guarantee inclusion.
+
+The homepage title starts with the brand, its visible headline describes PDF and photo tools, and its `WebSite` data supplies the preferred name and spelling alternatives. Converter pages have a heading specific to the selected tool in both the initial HTML and browser navigation.
+
+The hero also uses the joined brand spelling `AkeluwaToolBox`. Homepage tool cards, the logo, and the main PDF action use real links to their corresponding pages, with JavaScript preserving the current workspace for ordinary clicks. These links also work without JavaScript and support browser actions such as opening another tab. Tool guides include visible breadcrumbs and practical compression/extraction examples. Each page's structured data connects its `WebPage` to the application and the site's canonical identity.
+
+If the live test reports resource errors, check **View tested page** for its HTML, screenshot, and resource details. An "Other error" for a script does not identify the cause or prove that the page cannot be indexed. The PDF libraries and worker are now served from `/assets/vendor/` on the website, avoiding the previous dependency on Google's fetch of cdnjs resources. Titles, guides, canonical links, and structured data also remain in the initial HTML. Browser checks run with cdnjs blocked to verify the site and PDF tools still work.
+
+References: [Get your website on Google](https://developers.google.com/search/docs/fundamentals/get-on-google), [Request recrawling](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl), [Site names](https://developers.google.com/search/docs/appearance/site-names).
+
 ## Later: use a custom domain
 
 1. Add the domain to the same Vercel project and configure its DNS. Confirm HTTPS and the existing tool paths work on that domain.

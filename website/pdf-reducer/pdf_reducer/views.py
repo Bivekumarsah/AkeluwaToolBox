@@ -16,6 +16,8 @@ JOBS = threading.BoundedSemaphore(2)
 ASSETS = {
     "assets/css/design.css", "assets/js/pdf-reducer.js", "assets/js/photo-reducer.js", "assets/js/seo.js",
     "assets/images/favicon.svg", "assets/images/favicon.png", "assets/images/logo.png",
+    "assets/vendor/pdf-lib/pdf-lib.min.js", "assets/vendor/pdfjs/pdf.min.js",
+    "assets/vendor/pdfjs/pdf.worker.min.js",
     "robots.txt", "sitemap.xml", "site.webmanifest",
     "googlefb3975d72926d897.html",
 }
@@ -54,6 +56,9 @@ def asset(request, name):
     path = settings.TOOLBOX_DIR / name
     if not path.is_file():
         raise Http404
+    # Serve module scripts with a consistent MIME type across operating systems.
+    if path.suffix == ".js":
+        return FileResponse(path.open("rb"), content_type="text/javascript")
     return FileResponse(path.open("rb"))
 
 

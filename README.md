@@ -74,7 +74,7 @@ Photos are processed entirely in the browser with both local and static hosting.
 
 On the hosted/static site, files are processed in the user's browser. The PDF reducer never sends files to a cloud service. When the local launcher is used, compression runs through a same-origin Python service bound to `127.0.0.1`. It processes each PDF in an isolated worker with a timeout and removes temporary input/output files after each request. There is no database or saved upload history.
 
-The PDF libraries and AI background-removal model load from CDNs, so initial use needs internet access. Other toolbox tools continue to run in the browser with either hosting mode.
+The pinned PDF libraries and worker are served from `website/assets/vendor/` with their licenses, so PDF tools do not depend on an external CDN. The AI background-removal library and model load from external services, so initial background removal needs internet access. Other toolbox tools continue to run in the browser with either hosting mode.
 
 For Vercel, use either the **repository root** (blank Root Directory) or **`website`** as the Root Directory. Both contain a `vercel.json` and a `scripts/build-static.mjs` entry point. Select **Other** for the framework preset, use **`node scripts/build-static.mjs`** for the build command, and **`dist`** for the output directory. Each build creates `dist/` inside its selected root; there is no dependency installation step.
 
@@ -103,7 +103,7 @@ The local Django launcher is for personal use on this computer. It is not config
 
 ## SEO and custom domains
 
-The current primary URL is `https://akeluwatoolbox-website.vercel.app/`. Builds create individual HTML pages for the core tools, including `/compress-pdf/` and `/compress-photo/`, with descriptive metadata, guides, shared branding, and a generated sitemap. Tool navigation uses crawlable links and supports browser Back and reload.
+The current primary URL is `https://akeluwatoolbox-website.vercel.app/`. Builds create individual HTML pages for the core tools, including `/compress-pdf/` and `/compress-photo/`, with descriptive metadata, practical guides, shared branding, and a generated sitemap. The logo, home tool cards, and tool navigation use crawlable links, including when JavaScript is disabled. Browser navigation preserves tool settings and supports Back and reload. Visible breadcrumbs and structured page/application/site relationships provide consistent navigation and identity.
 
 Page definitions are in `website/assets/js/seo.js`. Later, set the Vercel Production environment variable `SITE_URL` to your new HTTPS domain and redeploy to update all generated SEO URLs. Configure matching permanent redirects and update Search Console when moving domains. Setup and migration steps are in [docs/seo.md](docs/seo.md).
 
