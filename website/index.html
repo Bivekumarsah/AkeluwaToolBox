@@ -415,7 +415,7 @@
     import * as pdfjsLib from '/assets/vendor/pdfjs/pdf.min.js';
     import { initPdfReducer } from '/assets/js/pdf-reducer.js';
     import { initPhotoReducer } from '/assets/js/photo-reducer.js';
-    import { pages as seoPages, pageFor, pageFromLocation, updateSeo } from '/assets/js/seo.js';
+    import { pages as seoPages, pageFor, pageFromLocation, updateSeo, escapeHtml } from '/assets/js/seo.js';
     pdfjsLib.GlobalWorkerOptions.workerSrc = '/assets/vendor/pdfjs/pdf.worker.min.js';
 
     const $ = (id) => document.getElementById(id);
@@ -570,7 +570,7 @@ async function openPdf(file) {
       const box=$('properties'), item=itemById(state.selected);
       if(!item || item.page!==state.page) { box.innerHTML='<div class="selection-empty">Select an image on the PDF to edit it.</div>'; return; }
       const pct=Math.round(item.width*100), opacity=Math.round(item.opacity*100);
-      box.innerHTML=`<p title="${item.name}">${item.name}<br><small>${item.scope==='all'?'Shown on all PDF pages':'Shown on page '+item.page}</small></p>${item.scope==='all'?`<div class="field"><label><span>All-page editing</span></label><select class="select-field" id="selectedSyncMode" style="margin-top:0"><option value="sync"${item.syncAll?' selected':''}>Same position and size on every page</option><option value="individual"${!item.syncAll?' selected':''}>Adjust each page separately</option></select></div>`:''}<div class="field"><label><span>Width</span><strong id="sizeValue">${pct}%</strong></label><input id="sizeRange" type="range" min="5" max="80" value="${pct}"></div><div class="field"><label><span>Opacity</span><strong id="opacityValue">${opacity}%</strong></label><input id="opacityRange" type="range" min="10" max="100" value="${opacity}"></div><div class="actions"><button class="btn" id="centerBtn">Center</button><button class="btn danger" id="deleteBtn">${item.scope==='all'?'Delete all copies':'Delete'}</button></div>`;
+      box.innerHTML=`<p title="${escapeHtml(item.name)}">${escapeHtml(item.name)}<br><small>${item.scope==='all'?'Shown on all PDF pages':'Shown on page '+item.page}</small></p>${item.scope==='all'?`<div class="field"><label><span>All-page editing</span></label><select class="select-field" id="selectedSyncMode" style="margin-top:0"><option value="sync"${item.syncAll?' selected':''}>Same position and size on every page</option><option value="individual"${!item.syncAll?' selected':''}>Adjust each page separately</option></select></div>`:''}<div class="field"><label><span>Width</span><strong id="sizeValue">${pct}%</strong></label><input id="sizeRange" type="range" min="5" max="80" value="${pct}"></div><div class="field"><label><span>Opacity</span><strong id="opacityValue">${opacity}%</strong></label><input id="opacityRange" type="range" min="10" max="100" value="${opacity}"></div><div class="actions"><button class="btn" id="centerBtn">Center</button><button class="btn danger" id="deleteBtn">${item.scope==='all'?'Delete all copies':'Delete'}</button></div>`;
       if(item.scope==='all')$('selectedSyncMode').onchange=e=>setGroupSync(item,e.target.value==='sync');
       $('sizeRange').oninput=(e)=>{ const ratio=item.height/item.width; item.width=+e.target.value/100; item.height=item.width*ratio; item.x=Math.min(item.x,1-item.width); item.y=Math.min(item.y,1-item.height); synchronizeGroupFrom(item); $('sizeValue').textContent=e.target.value+'%'; const el=document.querySelector(`[data-id="${item.id}"]`); if(el) Object.assign(el.style,{left:(item.x*canvas.width)+'px',top:(item.y*canvas.height)+'px',width:(item.width*canvas.width)+'px',height:(item.height*canvas.height)+'px'}); };
       $('opacityRange').oninput=(e)=>{ item.opacity=+e.target.value/100; synchronizeGroupFrom(item); $('opacityValue').textContent=e.target.value+'%'; const el=document.querySelector(`[data-id="${item.id}"]`); if(el) el.style.opacity=item.opacity; };
@@ -617,7 +617,7 @@ async function openPdf(file) {
         const bytes=await file.arrayBuffer(),doc=await pdfjsLib.getDocument({data:bytes.slice(0)}).promise;
         Object.assign(pdfImageState,{doc,fileName:file.name,pages:doc.numPages});
         $('convertPdfToImagesBtn').disabled=false;
-        $('pdfToImageStatus').innerHTML=`<strong>${file.name}</strong>${doc.numPages} page${doc.numPages===1?'':'s'} ready. PNG width is set to ${$('pdfImageWidth').value}px.`;
+        $('pdfToImageStatus').innerHTML=`<strong>${escapeHtml(file.name)}</strong>${doc.numPages} page${doc.numPages===1?'':'s'} ready. PNG width is set to ${$('pdfImageWidth').value}px.`;
       }catch(error){console.error(error);toast('This PDF could not be opened for image export.');}
     }
     async function convertPdfToImages(){
@@ -645,7 +645,7 @@ async function openPdf(file) {
       if(!files.length)return toast('Please choose PNG, JPG, or WebP images.');
       imagePdfState.files=files;
       $('convertImagesToPdfBtn').disabled=false;
-      $('imageToPdfStatus').innerHTML=`<strong>${files.length} image${files.length===1?'':'s'} selected</strong>${files.map(file=>file.name).join(', ')}`;
+      $('imageToPdfStatus').innerHTML=`<strong>${files.length} image${files.length===1?'':'s'} selected</strong>${files.map(file=>escapeHtml(file.name)).join(', ')}`;
     }
     function imageToPngData(file){
       return new Promise((resolve,reject)=>{
@@ -675,7 +675,7 @@ async function openPdf(file) {
         for(let index=0;index<imagePdfState.files.length;index++){
           const file=imagePdfState.files[index],image=await imageToPngData(file),embedded=await pdf.embedPng(image.bytes),[pageWidth,pageHeight]=selectedImagePdfPageSize(image),page=pdf.addPage([pageWidth,pageHeight]);
           page.drawImage(embedded,imagePlacement(pageWidth,pageHeight,image.width,image.height,fit));
-          $('imageToPdfStatus').innerHTML=`<strong>Building PDF</strong>Added ${index+1} of ${imagePdfState.files.length}: ${file.name}`;
+          $('imageToPdfStatus').innerHTML=`<strong>Building PDF</strong>Added ${index+1} of ${imagePdfState.files.length}: ${escapeHtml(file.name)}`;
         }
         const bytes=await pdf.save();
         downloadBlob(new Blob([bytes],{type:'application/pdf'}),'images-to-pdf.pdf');
@@ -686,7 +686,7 @@ async function openPdf(file) {
     }
     wireDrop($('pdfConvertDrop'),$('pdfConvertInput'),choosePdfForImages);
     wireDrop($('imagePdfDrop'),$('imagePdfInput'),chooseImagesForPdf,true);
-    $('pdfImageWidth').oninput=()=>{if(pdfImageState.doc)$('pdfToImageStatus').innerHTML=`<strong>${pdfImageState.fileName}</strong>${pdfImageState.pages} page${pdfImageState.pages===1?'':'s'} ready. PNG width is set to ${$('pdfImageWidth').value}px.`};
+    $('pdfImageWidth').oninput=()=>{if(pdfImageState.doc)$('pdfToImageStatus').innerHTML=`<strong>${escapeHtml(pdfImageState.fileName)}</strong>${pdfImageState.pages} page${pdfImageState.pages===1?'':'s'} ready. PNG width is set to ${$('pdfImageWidth').value}px.`};
     $('convertPdfToImagesBtn').onclick=convertPdfToImages;
     $('imagePdfSize').onchange=e=>$('imagePdfCustomSize').classList.toggle('hidden',e.target.value!=='custom');
     $('convertImagesToPdfBtn').onclick=convertImagesToPdf;
@@ -694,7 +694,7 @@ async function openPdf(file) {
       if(!converterImageFile(file))return toast('Please choose a PNG, JPG, or WebP image.');
       imageConvertState.file=file;
       $('convertImageBtn').disabled=false;
-      $('imageConvertStatus').innerHTML=`<strong>${file.name}</strong>${formatBytes(file.size)} selected for conversion.`;
+      $('imageConvertStatus').innerHTML=`<strong>${escapeHtml(file.name)}</strong>${formatBytes(file.size)} selected for conversion.`;
     }
     function loadImageElement(file){
       return new Promise((resolve,reject)=>{
@@ -726,7 +726,7 @@ async function openPdf(file) {
       if(files.length<2)return toast('Please choose at least two PDF files.');
       pdfMergeState.files=files;
       $('mergePdfsBtn').disabled=false;
-      $('pdfMergeStatus').innerHTML=`<strong>${files.length} PDFs selected</strong>${files.map(file=>file.name).join(', ')}`;
+      $('pdfMergeStatus').innerHTML=`<strong>${files.length} PDFs selected</strong>${files.map(file=>escapeHtml(file.name)).join(', ')}`;
     }
     async function mergePdfs(){
       if(pdfMergeState.files.length<2)return;
@@ -736,7 +736,7 @@ async function openPdf(file) {
         for(let index=0;index<pdfMergeState.files.length;index++){
           const file=pdfMergeState.files[index],doc=await PDFLib.PDFDocument.load(await file.arrayBuffer()),pages=await out.copyPages(doc,doc.getPageIndices());
           pages.forEach(page=>out.addPage(page));
-          $('pdfMergeStatus').innerHTML=`<strong>Merging PDFs</strong>Added ${index+1} of ${pdfMergeState.files.length}: ${file.name}`;
+          $('pdfMergeStatus').innerHTML=`<strong>Merging PDFs</strong>Added ${index+1} of ${pdfMergeState.files.length}: ${escapeHtml(file.name)}`;
         }
         const bytes=await out.save();
         downloadBlob(new Blob([bytes],{type:'application/pdf'}),'merged.pdf');
@@ -751,7 +751,7 @@ async function openPdf(file) {
         const bytes=await file.arrayBuffer(),doc=await PDFLib.PDFDocument.load(bytes.slice(0));
         Object.assign(pdfExtractState,{file,bytes,pageCount:doc.getPageCount()});
         $('extractPdfPagesBtn').disabled=false;
-        $('pdfExtractStatus').innerHTML=`<strong>${file.name}</strong>${doc.getPageCount()} page${doc.getPageCount()===1?'':'s'} available.`;
+        $('pdfExtractStatus').innerHTML=`<strong>${escapeHtml(file.name)}</strong>${doc.getPageCount()} page${doc.getPageCount()===1?'':'s'} available.`;
       }catch(error){console.error(error);toast('This PDF could not be opened for extraction.');}
     }
     function parsePageList(value,pageCount){

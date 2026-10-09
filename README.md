@@ -8,6 +8,16 @@ The homepage hero includes a static preview of the local Akeluwa Software Hub we
 
 ## Project folders
 
+The company website is in `AKELUWA-SH-Full-Stack/`. Its homepage now includes AkeluwaToolBox in Projects, opening `/akeluwatoolbox/` on the same domain. Individual tools use addresses such as `/akeluwatoolbox/compress-pdf/` and `/akeluwatoolbox/compress-photo/`.
+
+The company folder is a Git submodule pointing to its own GitHub repository. Clone with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` after a normal clone. Company commits are pushed in that repository; update the parent submodule pointer after pushing company changes.
+
+To preview the combined site, run `npm run dev` inside `AKELUWA-SH-Full-Stack/` (Node.js and that project's dependencies are required), then open the local URL printed by the server. The company homepage appears first; choose **Open AkeluwaToolBox** in Projects. Existing toolbox launchers continue to provide the standalone local Python PDF service.
+
+After editing `website/`, run `node scripts/sync-company-toolbox.mjs` from this folder to refresh the company's browser-source snapshot. The company project builds that snapshot automatically for development and production. Deploy **the company project**, configured with `NEXT_PUBLIC_SITE_URL=https://www.akeluwasoftwarehub.com.np`, to the hosting account for that domain. Building locally does not publish changes or update DNS.
+
+For Vercel deployment from the company GitHub repository, use its committed `vercel.json`: Next.js, `npm run build:vercel`, Root Directory blank, and the default Next.js output directory. If Vercel instead imports this parent repository, set Root Directory to `AKELUWA-SH-Full-Stack`. See [company Vercel setup](AKELUWA-SH-Full-Stack/docs/TOOLBOX.md#hosting), including the deployed Go API environment variable. The static Vercel configuration in this parent folder builds only the standalone toolbox.
+
 ```text
 AkeluwaToolBox/
 |-- website/

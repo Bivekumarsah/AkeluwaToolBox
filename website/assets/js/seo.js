@@ -5,7 +5,7 @@ export const site = {
   description: 'AkeluwaToolBox offers free online PDF and photo tools. Compress, edit, convert and merge files or remove image backgrounds in your browser. No sign-up.',
 };
 
-export const pages = [
+const pageDefinitions = [
   {
     path: '/', tool: 'home', label: 'All tools',
     title: 'Akeluwa ToolBox | Free PDF & Photo Tools Online',
@@ -109,6 +109,17 @@ export const pages = [
   },
 ];
 
+export function normalizeBasePath(value = '') {
+  const path = String(value).replace(/\/$/, '');
+  if (!/^(\/[a-z0-9][a-z0-9_-]*)*$/.test(path)) throw new Error('The site base path must contain only simple URL path segments.');
+  return path;
+}
+const browserBasePath = typeof document === 'undefined' ? '' : normalizeBasePath(document.body.dataset.siteBase || '');
+export function sitePath(path, basePath = browserBasePath) {
+  const base = normalizeBasePath(basePath);
+  return base && !path.startsWith(base + '/') && path !== base ? base + path : path;
+}
+export const pages = pageDefinitions.map(page => ({ ...page, path: sitePath(page.path) }));
 export const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
 export const pageFor = (tool, panel) => pages.find(page => page.tool === tool && (panel ? page.panel === panel : !page.panel)) || pages.find(page => page.tool === tool && !page.panel) || pages[0];
 
@@ -120,16 +131,17 @@ export function normalizeOrigin(value = site.origin) {
   return url.origin;
 }
 
-export function renderGuide(page) {
-  const links = pages.filter(other => other.path !== page.path).map(other => `<a href="${other.path}">${escapeHtml(other.label)}</a>`).join('');
+export function renderGuide(page, basePath = browserBasePath) {
+  const links = pages.filter(other => sitePath(other.path, basePath) !== sitePath(page.path, basePath)).map(other => `<a href="${sitePath(other.path, basePath)}">${escapeHtml(other.label)}</a>`).join('');
   const steps = page.steps.length ? `<ol>${page.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : '';
-  const breadcrumb = page.tool === 'home' ? '' : `<nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">${escapeHtml(site.name)}</a></li><li aria-current="page">${escapeHtml(page.label)}</li></ol></nav>`;
+  const breadcrumb = page.tool === 'home' ? '' : `<nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="${sitePath('/', basePath)}">${escapeHtml(site.name)}</a></li><li aria-current="page">${escapeHtml(page.label)}</li></ol></nav>`;
   const example = page.example ? `<h3>Practical example</h3><p>${escapeHtml(page.example)}</p>` : '';
   return `<section class="seo-guide" id="toolGuide" aria-labelledby="guideTitle">${breadcrumb}<h2 id="guideTitle">${escapeHtml(page.heading)}</h2><p>${escapeHtml(page.intro)}</p>${steps}${example}${page.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}<h3>Common questions</h3>${page.faq.map(([question, answer]) => `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`).join('')}<nav class="related-tools" aria-label="Related file tools">${links}</nav></section>`;
 }
 
-export function structuredData(page, origin = site.origin) {
+export function structuredData(page, origin = site.origin, basePath = browserBasePath) {
   const url = origin + page.path;
+  const home = origin + sitePath('/', basePath);
   const application = {
     '@type': 'WebApplication', '@id': url + '#application', name: page.tool === 'home' ? site.name : `${page.label} — ${site.name}`,
     url, description: page.description, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any device with a supported web browser',
@@ -137,44 +149,46 @@ export function structuredData(page, origin = site.origin) {
   };
   const graph = [application];
   if (page.tool === 'home') graph.push({
-    '@type': 'WebSite', '@id': origin + '/#website', name: site.name,
-    alternateName: ['AkeluwaToolBox', 'Akeluwa Toolbox', new URL(origin).hostname], url: origin + '/', description: site.description,
+    '@type': 'WebSite', '@id': home + '#website', name: site.name,
+    alternateName: ['AkeluwaToolBox', 'Akeluwa Toolbox', new URL(origin).hostname], url: home, description: site.description,
   });
   else graph.push({'@type': 'BreadcrumbList', itemListElement: [
-    {'@type': 'ListItem', position: 1, name: site.name, item: origin + '/'},
+    {'@type': 'ListItem', position: 1, name: site.name, item: home},
     {'@type': 'ListItem', position: 2, name: page.label, item: url},
   ]});
   graph.push({
     '@type': 'WebPage', '@id': url + '#webpage', url, name: page.title,
     description: page.description, inLanguage: 'en',
-    isPartOf: {'@id': origin + '/#website'}, mainEntity: {'@id': application['@id']},
+    isPartOf: {'@id': home + '#website'}, mainEntity: {'@id': application['@id']},
   });
   return {'@context': 'https://schema.org', '@graph': graph};
 }
 
-const metaValues = (page, origin, noindex = false) => [
+const metaValues = (page, origin, noindex = false, basePath = browserBasePath) => [
   ['name', 'application-name', site.name],
   ['name', 'description', page.description], ['name', 'robots', noindex ? 'noindex, follow' : 'index, follow'],
   ['property', 'og:title', page.title], ['property', 'og:description', page.description], ['property', 'og:type', 'website'],
   ['property', 'og:site_name', site.name], ['property', 'og:url', origin + page.path],
-  ['property', 'og:image', origin + '/assets/images/logo.png'], ['property', 'og:image:alt', site.name + ' logo'],
+  ['property', 'og:image', origin + sitePath('/assets/images/logo.png', basePath)], ['property', 'og:image:alt', site.name + ' logo'],
   ['name', 'twitter:card', 'summary_large_image'], ['name', 'twitter:title', page.title],
-  ['name', 'twitter:description', page.description], ['name', 'twitter:image', origin + '/assets/images/logo.png'],
+  ['name', 'twitter:description', page.description], ['name', 'twitter:image', origin + sitePath('/assets/images/logo.png', basePath)],
 ];
 
-export function renderPage(template, page, origin = site.origin, noindex = false) {
+export function renderPage(template, page, origin = site.origin, noindex = false, basePath = '') {
   origin = normalizeOrigin(origin);
+  basePath = normalizeBasePath(basePath);
+  page = { ...page, path: sitePath(page.path, basePath) };
   let html = template.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(page.title)}</title>`);
-  for (const [attribute, key, value] of metaValues(page, origin, noindex)) {
+  for (const [attribute, key, value] of metaValues(page, origin, noindex, basePath)) {
     const pattern = new RegExp(`<meta ${attribute}="${key.replace(/\./g, '\\.')}"[^>]*>`);
     const tag = `<meta ${attribute}="${key}" content="${escapeHtml(value)}" />`;
     html = pattern.test(html) ? html.replace(pattern, tag) : html.replace('</head>', `  ${tag}\n</head>`);
   }
   html = html.replace(/<link rel="canonical"[^>]*>/, `<link rel="canonical" href="${origin + page.path}" />`);
-  html = html.replace(/<body[^>]*>/, `<body data-seo-path="${page.path}" data-seo-noindex="${noindex}">`);
+  html = html.replace(/<body[^>]*>/, `<body data-seo-path="${page.path}" data-seo-noindex="${noindex}" data-site-base="${basePath}">`);
   html = html.replace(/<script id="site-origin" type="application\/json">[^<]*<\/script>/, `<script id="site-origin" type="application/json">${JSON.stringify(origin)}</script>`);
-  html = html.replace(/<script id="structured-data" type="application\/ld\+json">[\s\S]*?<\/script>/, `<script id="structured-data" type="application/ld+json">${JSON.stringify(structuredData(page, origin)).replace(/</g, '\\u003c')}</script>`);
-  html = html.replace(/<!-- seo-guide:start -->[\s\S]*?<!-- seo-guide:end -->/, `<!-- seo-guide:start -->${renderGuide(page)}<!-- seo-guide:end -->`);
+  html = html.replace(/<script id="structured-data" type="application\/ld\+json">[\s\S]*?<\/script>/, `<script id="structured-data" type="application/ld+json">${JSON.stringify(structuredData(page, origin, basePath)).replace(/</g, '\\u003c')}</script>`);
+  html = html.replace(/<!-- seo-guide:start -->[\s\S]*?<!-- seo-guide:end -->/, `<!-- seo-guide:start -->${renderGuide(page, basePath)}<!-- seo-guide:end -->`);
   const visibleId = page.tool + 'Tool';
   html = html.replace(/<(section|div) class="([^"]*)" id="(homeTool|pdfTool|reducerTool|photoTool|converterTool|backgroundTool)"/g, (_, tag, classes, id) => {
     const names = classes.split(' ').filter(name => name !== 'hidden');
@@ -186,6 +200,9 @@ export function renderPage(template, page, origin = site.origin, noindex = false
     html = html.replace(/(<h1 id="converterTitle">)[^<]*(<\/h1>)/, (_, open, close) => open + escapeHtml(page.title.split(' | ')[0]) + close);
   }
   html = html.replace(/class="tool-tab(?: active)?"([^>]*?)data-tool="([^"]+)"(?: aria-current="page")?/g, (_, middle, tool) => `class="tool-tab${tool === page.tool ? ' active' : ''}"${middle}data-tool="${tool}"${tool === page.tool ? ' aria-current="page"' : ''}`);
+  // Mount only local HTML URLs and module/worker imports; external URLs and PDF content are untouched.
+  html = html.replace(/(\b(?:href|src)=["'])(\/(?!\/)[^"']*)/g, (_, prefix, path) => prefix + sitePath(path, basePath));
+  html = html.replace(/(\bfrom\s*["']|workerSrc\s*=\s*["'])(\/(?!\/)[^"']*)/g, (_, prefix, path) => prefix + sitePath(path, basePath));
   return html;
 }
 

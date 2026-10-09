@@ -1,4 +1,5 @@
 // PDF compression for static hosting and the optional same-origin local engine.
+import { sitePath } from './seo.js';
 const MAX_BYTES = 60 * 1024 * 1024;
 const MAX_PAGES = 200;
 const MAX_PIXELS = 4_000_000;
@@ -104,7 +105,7 @@ export function initPdfReducer({ pdfjsLib, PDFLib }) {
     // A hosted site never sends PDFs to a remote service or a localhost service.
     if (!['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) return;
     try {
-      const response = await fetch('/api/pdf-reducer/capabilities/', { signal: AbortSignal.timeout(3000), cache: 'no-store' });
+      const response = await fetch(sitePath('/api/pdf-reducer/capabilities/'), { signal: AbortSignal.timeout(3000), cache: 'no-store' });
       if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
         const data = await response.json();
         if (data.engine === 'pymupdf' && data.csrf_token) {
@@ -120,7 +121,7 @@ export function initPdfReducer({ pdfjsLib, PDFLib }) {
     const form = new FormData();
     form.append('file', state.file); form.append('target', String(target)); form.append('mode', mode);
     progress(null, 'Compressing on this computer…');
-    const response = await fetch('/api/pdf-reducer/compress/', {
+    const response = await fetch(sitePath('/api/pdf-reducer/compress/'), {
       method: 'POST', body: form, signal, credentials: 'same-origin',
       headers: { 'X-CSRFToken': state.local.csrf_token },
     });
