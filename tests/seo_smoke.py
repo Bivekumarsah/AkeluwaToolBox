@@ -22,6 +22,8 @@ ROUTES = {
 }
 
 
+EXTRA_TOOL_SLUGS = ["photo-signature-resizer","pdf-to-word","pdf-esign-watermark","ocr-text-extractor","unicode-preeti","resume-builder","image-format-converter","qr-code-generator","pdf-page-numbers","bulk-image-compressor"]
+
 class Metadata(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -90,7 +92,7 @@ def main():
         checks.append("Ten published pages have unique titles/descriptions, self-canonicals, guides, and valid structured data")
         sitemap = ET.fromstring(urllib.request.urlopen(static + "/sitemap.xml").read())
         urls = {node.text for node in sitemap.findall("{*}url/{*}loc")}
-        assert urls == {ORIGIN + path for path in ROUTES}
+        assert urls == {ORIGIN + path for path in ROUTES} | {ORIGIN + '/extra-tools/'} | {ORIGIN + '/extra-tools/' + slug + '/' for slug in EXTRA_TOOL_SLUGS}
         robots = urllib.request.urlopen(static + "/robots.txt").read().decode()
         assert "Allow: /" in robots and ORIGIN + "/sitemap.xml" in robots
         for base in (static, local):

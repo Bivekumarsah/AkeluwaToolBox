@@ -1,0 +1,21 @@
+name: Extra tools quality checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  extras:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax check
+        run: node --check website/extra-tools/app.js && node --check website/scripts/build-static.mjs
+      - name: Static pages, canonical links, and core behavior guards
+        run: node --test tests/extra-tools.test.mjs

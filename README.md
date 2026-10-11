@@ -6,6 +6,25 @@ The header uses the supplied Forest Green AkeluwaToolBox logo, and the browser i
 
 The homepage hero includes a static preview of the local Akeluwa Software Hub website, recreated from the supplied screenshot with its dark design, headline, and signal illustration.
 
+## Ten additional free browser tools — October 2026
+
+The `website/extra-tools/` directory provides ten independent, search-indexable client-side utility pages, linked from the existing Toolbox homepage:
+
+- Photo & Signature Resizer: exact pixel dimensions, centered crop or fit, format and target KB (not guaranteed for PNG).
+- PDF to Editable Word: extracts *selectable text only* into basic editable DOCX, not complex original layout or scanned-image text.
+- PDF eSign & Watermark: drawn **appearance-only** signature or text watermark, *not* certificate-backed signatures.
+- OCR Text Extractor: English/Nepali image and first five PDF-page OCR with Tesseract.js 5.1.1 (downloads an engine/language model from jsDelivr).
+- Unicode/Preeti Converter: explicitly limited **basic** glyph mapping; proofread conjuncts and complex matras.
+- Resume Builder: live preview, HTML export, and browser Print / Save as PDF, no watermark.
+- Image Format Converter: JPG/PNG/WebP export and optional resizing; HEIC input depends on browser support.
+- QR Code Generator: renders a QR PNG with qrcodejs 1.0.0 from cdnjs; do not enter secrets.
+- PDF Page Numbers: position and number format using bundled pdf-lib.
+- Bulk Image Compressor: batches up to 20 images, downloads one ZIP, size targets may not be achievable.
+
+All are free without accounts or an upload backend. PDFs and selected images are processed locally; optional browser engines/language data need a network connection. No feature should be represented as perfect or legally certified.
+
+**Build:** `node scripts/build-static.mjs` generates `dist/extra-tools/`, 11 independent canonical URLs including the hub, and sitemap entries. `node --test tests/extra-tools.test.mjs` validates the build and pages. Static canonical HTML is rewritten at build time for `SITE_URL` and `SITE_BASE_PATH`. If hosting beneath `/akeluwatoolbox/`, copy `extra-tools/` additively into the Company repository and ensure its static build publishes the folder—never run a wholesale source overwrite that could remove recent Digital Stamp Maker improvements.
+
 ## Project folders
 
 The company website is in `AKELUWA-SH-Full-Stack/`. Its homepage now includes AkeluwaToolBox in Projects, opening `/akeluwatoolbox/` on the same domain. Individual tools use addresses such as `/akeluwatoolbox/compress-pdf/` and `/akeluwatoolbox/compress-photo/`.
