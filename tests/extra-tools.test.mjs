@@ -116,3 +116,13 @@ test('All tool catalogs have an accessible, functional search hook and stamp is 
  assert.ok(script.includes('button.setAttribute(\'aria-pressed\''));
  assert.ok(css.includes('.tool-card[hidden]'));
 });
+
+test('Safe synchronization never overwrites advanced company stamp source or routes',async()=>{
+ const sync=await read('scripts/sync-company-toolbox.mjs');
+ for(const protectedPath of ['index.html','routes.json','assets/js/digital-stamp.js','assets/js/stamp-studio.js','assets/js/country-stamps.js','assets/js/seo.js']){
+  assert.ok(!sync.includes("'"+protectedPath+"',"), 'protected target in shared copy list: '+protectedPath);
+ }
+ assert.ok(sync.includes("home.includes('id=\"stampTool\"')"));
+ assert.ok(sync.includes("verify !== home"));
+ assert.ok(sync.includes("includes('--dry-run')"));
+});
