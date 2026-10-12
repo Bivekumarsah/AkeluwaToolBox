@@ -149,6 +149,7 @@
     @media (max-width:700px) { header { padding:9px 14px; flex-wrap:wrap; } .privacy { display:none; } .tool-tabs { order:3; width:100%; } .tool-tab { flex:1; } .home { padding:28px 14px; } .tool-card { min-height:210px; } .converter-layout { padding:18px 12px; } .converter-row { grid-template-columns:1fr; } .workspace { display:block; } aside { border:0 !important; } .left { padding-bottom:12px; } .pages { grid-template-columns:repeat(4,1fr); max-height:100px; } main { min-height:68vh; } .stage-wrap { padding:22px 14px; } .right { display:block; } .toolbar { align-items:flex-start; } .bg-layout { display:block; } .bg-center { padding:18px 12px; } .compare { grid-template-columns:1fr; min-height:380px; } .compare-pane { min-height:310px; } .compare-pane + .compare-pane { border-left:0; border-top:1px solid var(--line); } }
   </style>
   <link rel="stylesheet" href="/assets/css/design.css" />
+  <link rel="stylesheet" href="/assets/css/core-live-previews.css" />
   <meta name="theme-color" content="#195443" />
   <meta property="og:site_name" content="Akeluwa ToolBox" />
   <meta property="og:image" content="https://akeluwatoolbox-website.vercel.app/assets/images/logo.png" />
@@ -434,6 +435,7 @@
   <script id="site-origin" type="application/json">"https://akeluwatoolbox-website.vercel.app"</script>
   <script src="/assets/vendor/pdf-lib/pdf-lib.min.js"></script>
   <script type="module" src="/assets/js/tool-finder.mjs"></script>
+  <script type="module" src="/assets/js/core-live-previews.mjs"></script>
   <script type="module">
     import * as pdfjsLib from '/assets/vendor/pdfjs/pdf.min.js';
     import { initPdfReducer } from '/assets/js/pdf-reducer.js';
