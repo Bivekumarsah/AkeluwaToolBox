@@ -86,3 +86,43 @@ test('Resume print CSS keeps preview visible and PNG reports accurate target siz
  assert.ok(js.includes('blob.size<=targetKB*1024'));
  assert.ok(js.includes('drawImageTo(img,img.naturalWidth,img.naturalHeight'));
 });
+
+test('Tool finder resolves categories, synonyms and multiword searches without a server',async()=>{
+ const {categoryForPath,matchesTool,normalizeSearch}=await import('../website/assets/js/tool-finder.mjs');
+ assert.equal(categoryForPath('/akeluwatoolbox/extra-tools/pdf-to-word/'),'documents');
+ assert.equal(categoryForPath('/akeluwatoolbox/digital-stamp-maker/'),'business');
+ assert.equal(categoryForPath('/extra-tools/unicode-preeti/'),'everyday');
+ assert.equal(categoryForPath('/compress-photo/'),'images');
+ assert.equal(normalizeSearch('  RESIZE  PDF! '),'resize pdf');
+ const photo={title:'Photo size reducer',description:'Convert and compress a passport image under 200 KB',href:'/compress-photo/'};
+ assert.equal(matchesTool(photo,'shrink photo','images'),true);
+ assert.equal(matchesTool(photo,'compress photo','documents'),false);
+ assert.equal(matchesTool(photo,'unrelated word','all'),false);
+ const stamp={title:'Digital stamp maker',description:'Create an authorized business seal',href:'/akeluwatoolbox/digital-stamp-maker/'};
+ assert.equal(matchesTool(stamp,'business stamp','business'),true);
+});
+test('All tool catalogs have an accessible, functional search hook and stamp is not lost',async()=>{
+ const [home,extra,script,css]=await Promise.all([
+  read('website/index.html'),read('website/extra-tools/index.html'),
+  read('website/assets/js/tool-finder.mjs'),read('website/assets/css/design.css')]);
+ for(const html of [home,extra]){
+  assert.ok(html.includes('id="toolSearch"'));
+  assert.ok(html.includes('id="toolSearchCount"'));
+  assert.ok(html.includes('aria-live="polite"'));
+  assert.ok(html.includes('tool-finder.mjs'));
+ }
+ assert.ok(home.includes('https://www.akeluwasoftwarehub.com.np/akeluwatoolbox/digital-stamp-maker/'));
+ assert.ok(script.includes("event.key !== 'Enter'"));
+ assert.ok(script.includes('button.setAttribute(\'aria-pressed\''));
+ assert.ok(css.includes('.tool-card[hidden]'));
+});
+
+test('Safe synchronization never overwrites advanced company stamp source or routes',async()=>{
+ const sync=await read('scripts/sync-company-toolbox.mjs');
+ for(const protectedPath of ['index.html','routes.json','assets/js/digital-stamp.js','assets/js/stamp-studio.js','assets/js/country-stamps.js','assets/js/seo.js']){
+  assert.ok(!sync.includes("'"+protectedPath+"',"), 'protected target in shared copy list: '+protectedPath);
+ }
+ assert.ok(sync.includes("home.includes('id=\"stampTool\"')"));
+ assert.ok(sync.includes("verify !== home"));
+ assert.ok(sync.includes("includes('--dry-run')"));
+});

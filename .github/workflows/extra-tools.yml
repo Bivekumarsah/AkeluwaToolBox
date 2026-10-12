@@ -16,6 +16,6 @@ jobs:
         with:
           node-version: "22"
       - name: Syntax check
-        run: node --check website/extra-tools/app.js && node --check website/scripts/build-static.mjs
+        run: node --check website/extra-tools/app.js && node --check website/scripts/build-static.mjs && node --check website/assets/js/tool-finder.mjs
       - name: Static pages, canonical links, and core behavior guards
         run: node --test tests/extra-tools.test.mjs

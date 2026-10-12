@@ -71,3 +71,15 @@ The public site was confirmed to serve localhost canonicals and a localhost site
 Tool links use real URLs; navigation updates metadata and supports Back/reload. The static build generates sitemap/robots files, and Vercel redirects legacy query links to the corresponding tool pages. Removed the blanket homepage rewrite so missing URLs can return 404. Preview builds discourage indexing. Added Search Console and domain migration instructions under `docs/seo.md`.
 
 Validation: all 16 backend tests, 10 PDF browser check groups, and 12 photo check groups passed. The SEO checks cover static metadata/content, disabled JavaScript, ten local/static routes, converter panels, mobile layouts, navigation, custom-domain overrides, preview indexing rules, and invalid domain settings. No JavaScript errors were reported. Search Console verification/submission and search rankings are not completed by these checks.
+
+
+## Tool discovery and first-time customer UX — October 12, 2026
+
+- Added one searchable index across the existing core cards and ten additional tools, with accessible category filters, keyboard Enter navigation, clear/reset, live result counts and empty states. Search and filtering are done locally in the browser without logging queries or requiring an API.
+- Preserved the complete core+extra catalog, improved task-based labels, and added a direct visible link from standalone Toolbox to the **company-hosted Digital Stamp Maker**. The advanced stamp code itself remains only in the company repository and must never be overwritten with the standalone copy.
+- Reused one small, tested tool-finder module for both the standalone homepage and the extra-tools index. Existing HTML remains indexable without JavaScript.
+- Added automated tests for common customer searches, category detection, mounted company prefixes, and the no-stamp-loss link.
+
+**Deployment integrity:** The public `www.akeluwasoftwarehub.com.np/akeluwatoolbox/` Toolbox is built from `Bivekumarsah/AKELUWA-SH-Full-Stack/toolbox`, not from this repository. Do not copy `website/index.html` wholesale into that folder: it would erase advanced Digital Stamp Maker features. Apply the safe discovery changes additively to the company copy, validate its build and stamp regression tests, and only then deploy.
+
+**Quality scores:** The 9/10 goal is aspirational until a new accessibility scan, browser tests on real devices, measured loading times, and hands-on user testing pass. Search alone does not justify awarding every section 9/10.
