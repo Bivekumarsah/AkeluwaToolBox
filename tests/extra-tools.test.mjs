@@ -126,3 +126,21 @@ test('Safe synchronization never overwrites advanced company stamp source or rou
  assert.ok(sync.includes("verify !== home"));
  assert.ok(sync.includes("includes('--dry-run')"));
 });
+
+test('Live mobile previews cover all 10 extra tool pages and core photo/PDF utilities',async()=>{
+ const catalog=JSON.parse(await read('website/extra-tools/catalog.json'));
+ for(const item of catalog){
+   const html=await read('website/extra-tools/'+item.slug+'/index.html');
+   assert.ok(html.includes('extra-live-previews.mjs'),item.slug);
+ }
+ const mod=await read('website/assets/js/extra-live-previews.mjs');
+ const app=await read('website/extra-tools/app.js');
+ const home=await read('website/index.html');
+ const core=await read('website/assets/js/core-live-previews.mjs');
+ assert.ok(mod.includes('requestAnimationFrame(render)'));
+ assert.ok(mod.includes('URL.revokeObjectURL'));
+ assert.ok(app.includes('byId("fontInput").addEventListener("input",updateText)'));
+ assert.ok(app.includes('byId("qrValue").addEventListener("input",schedule)'));
+ assert.ok(home.includes('core-live-previews.mjs'));
+ assert.ok(core.includes('First-page preview is below'));
+});
