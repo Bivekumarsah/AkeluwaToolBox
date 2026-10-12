@@ -64,3 +64,14 @@ The default origin is in `website/assets/js/seo.js`; `SITE_URL` overrides it for
 Keep guides accurate when tool capabilities change. Add original examples and troubleshooting information that answer real user questions. Use natural titles and descriptions; do not create repetitive pages just to repeat keywords or invent ratings/reviews. Test mobile speed and actual downloads as the tools evolve.
 
 References: [Google SEO Starter Guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide), [JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [URL Inspection](https://support.google.com/webmasters/answer/9012289), [site moves](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes).
+
+
+## Business identity and AI-search discoverability
+
+Akeluwa ToolBox is developed by **AKELUWA Softwarehub**, a company registered in Nepal. The public company website is https://www.akeluwasoftwarehub.com.np/. This identity is displayed in the homepage guide and linked in structured data using the company's stable Organization `@id`. Each tool is identified as a WebApplication with the company as its provider, and the homepage declares its publisher.
+
+The production build allows `OAI-SearchBot` and `PerplexityBot` alongside general web crawlers. Preview deployments retain their disallow/noindex treatment; do not publicly index private previews. Explicitly listing AI-search bots is only a crawl-permission signal and does not guarantee discovery, citation, or recommendation by AI services.
+
+Check the generated `/robots.txt`, `/sitemap.xml` and HTML of the homepage and major tool URLs after each production deployment. The site's standalone Vercel URL and the company-embedded copy share some content; decide which address should be canonical for each duplicate page before scaling search promotion. Do not change both without an intentional URL and redirect strategy.
+
+Only add organization `sameAs` links, registration numbers, physical addresses, or customer testimonials once their accuracy and ownership have been verified.
