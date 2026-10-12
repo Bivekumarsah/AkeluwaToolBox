@@ -112,7 +112,7 @@ test('All tool catalogs have an accessible, functional search hook and stamp is 
   assert.ok(html.includes('tool-finder.mjs'));
  }
  assert.ok(home.includes('https://www.akeluwasoftwarehub.com.np/akeluwatoolbox/digital-stamp-maker/'));
- assert.ok(script.includes('event.key === \'Enter\''));
+ assert.ok(script.includes("event.key !== 'Enter'"));
  assert.ok(script.includes('button.setAttribute(\'aria-pressed\''));
  assert.ok(css.includes('.tool-card[hidden]'));
 });
